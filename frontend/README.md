@@ -1,0 +1,1 @@
+Copy these files into a Create-React-App project. Set REACT_APP_BACKEND_URL if needed.
