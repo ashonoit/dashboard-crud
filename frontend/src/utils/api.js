@@ -1,5 +1,22 @@
+import axios from 'axios';
+
 // Use Vite's environment variable system
 const BACKEND = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
+
+const api = axios.create({
+  baseURL: BACKEND,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
 
 export const setAuthToken = (token) => {
   if (token) {
@@ -11,9 +28,4 @@ export const setAuthToken = (token) => {
 
 export const getAuthToken = () => localStorage.getItem('token');
 
-export const authHeaders = () => ({
-  'Content-Type': 'application/json',
-  'Authorization': 'Bearer ' + getAuthToken(),
-});
-
-export default BACKEND;
+export default api;

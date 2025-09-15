@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import BACKEND, { setAuthToken } from '../utils/api';
+import api, { setAuthToken } from '../utils/api';
 
 export default function LoginPage(){
   const nav = useNavigate();
@@ -13,23 +13,17 @@ export default function LoginPage(){
     setErr('');
     if (!email || !password) return setErr('Fill all fields');
     try {
-      const res = await fetch(`${BACKEND}/auth/login`, {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({ email, password })
-      });
-      const data = await res.json();
-      if (!res.ok) return setErr(data.message || data.error || 'Login failed');
-      setAuthToken(data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
+      const res = await api.post('/auth/login', { email, password });
+      setAuthToken(res.data.token);
+      localStorage.setItem('user', JSON.stringify(res.data.user));
       nav('/dashboard');
     } catch (err) {
-      setErr('Server error');
+      setErr(err.response?.data?.message || err.message || 'Server error');
     }
   };
 
   const handleGoogle = () => {
-    window.location.href = `${BACKEND}/auth/google`;
+    window.location.href = `${api.defaults.baseURL}/auth/google`;
   };
 
   return (
@@ -37,7 +31,6 @@ export default function LoginPage(){
       <div className="card" style={{maxWidth:520, margin:'40px auto'}}>
         <div className="header">
           <h2>Sign in</h2>
-          {/* <div className="small">Dark • Minimal</div> */}
         </div>
         <form onSubmit={submit}>
           <div style={{marginBottom:12}}>

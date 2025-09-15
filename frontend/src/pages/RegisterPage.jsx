@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import BACKEND from '../utils/api';
+import api from '../utils/api';
 
 export default function RegisterPage(){
   const nav = useNavigate();
@@ -18,16 +18,11 @@ export default function RegisterPage(){
     }
 
     try {
-      const res = await fetch(`${BACKEND}/auth/register`, {
-        method:'POST', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify(form)
-      });
-      const data = await res.json();
-      if (!res.ok) return setErr(data.message || data.error || 'Registration failed');
+      await api.post('/auth/register', form);
       alert('Registered successfully. Please login.');
       nav('/login');
     } catch (err) {
-      setErr('Server error');
+      setErr(err.response?.data?.message || err.message || 'Server error');
     }
   };
 
