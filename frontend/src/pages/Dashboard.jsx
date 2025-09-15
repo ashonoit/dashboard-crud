@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getAuthToken, authHeaders, setAuthToken } from '../utils/api';
+import { CSVLink } from "react-csv";
+
 
 const BACKEND = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
 
@@ -31,6 +33,15 @@ export default function Dashboard(){
   const [order,setOrder] = useState('asc');
   const [editing,setEditing] = useState(null);
   const [loading,setLoading] = useState(false);
+
+  const csvHeaders = [
+  { label: "Name", key: "name" },
+  { label: "Email", key: "email" },
+  { label: "Phone", key: "phoneNumber" },
+  { label: "Age", key: "age" },
+  { label: "Father's Number", key: "fathersNumber" },
+    ];
+
 
   const token = getAuthToken();
   const headers = { 'Content-Type':'application/json', 'Authorization':'Bearer ' + token };
@@ -148,7 +159,17 @@ export default function Dashboard(){
             <button className="btn secondary" onClick={()=>setPage(p=>Math.min(totalPages,p+1))} disabled={page===totalPages}>Next</button>
           </div>
         </div>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 16 }}>
+          <CSVLink 
+            data={users} 
+            headers={csvHeaders} 
+            filename="users.csv"
+          >
+            <button className="btn secondary">Download CSV</button>
+          </CSVLink>
+        </div>
       </div>
+
 
       {editing && (
         <div className="modal">
