@@ -74,4 +74,36 @@ router.delete('/', auth, async (req, res) => {
   }
 });
 
+// Create User
+router.post("/", async (req, res) => {
+  try {
+    const { name, email, phoneNumber, age, fathersNumber } = req.body;
+
+    if (!name || !email) {
+      return res.status(400).json({ message: "Name and Email are required" });
+    }
+
+    const newUser = new User({ name, email, phoneNumber, age, fathersNumber });
+    const savedUser = await newUser.save();
+
+    res.status(201).json(savedUser);
+  } catch (error) {
+    console.error("Error creating user:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// Get All Users (for dashboard refresh)
+router.get("/", async (req, res) => {
+  try {
+    const users = await User.find().sort({ createdAt: -1 });
+    res.json(users);
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+
 module.exports = router;
+

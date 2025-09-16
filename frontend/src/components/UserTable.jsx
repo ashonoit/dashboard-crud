@@ -13,7 +13,7 @@ export default function UserTable({ users, selectedIds, toggleSelect, onEdit, on
             <th onClick={() => changeSort("email")}>Email {sortBy === "email" ? (order === "asc" ? "▲" : "▼") : ""}</th>
             <th onClick={() => changeSort("phoneNumber")}>Phone</th>
             <th onClick={() => changeSort("age")}>Age</th>
-            <th onClick={() => changeSort("fathersNumber")}>Father's No.</th>
+            <th onClick={() => changeSort("fathersNumber")}>Father's Name</th>
             <th>Action</th>
           </tr>
         </thead>

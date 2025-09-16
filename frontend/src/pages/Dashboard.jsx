@@ -1,7 +1,7 @@
 // src/pages/Dashboard.jsx
 import React, { useEffect, useState } from "react";
 import api, { setAuthToken } from "../utils/api";
-
+import AddUserModal from "../components/AddUserModal";
 import UserTable from "../components/UserTable";
 import PaginationControls from "../components/PaginationControls";
 import EditUserModal from "../components/EditUserModal";
@@ -17,6 +17,8 @@ export default function Dashboard() {
   const [order, setOrder] = useState("asc");
   const [editing, setEditing] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [adding, setAdding] = useState(false);
+
 
   useEffect(() => { fetchUsers(); }, [page, limit, sortBy, order]);
 
@@ -63,6 +65,21 @@ export default function Dashboard() {
     window.location.href = "/login";
   };
 
+    // ✅ Save new user
+  const addUser = async (user) => {
+    const res = await fetch("http://localhost:5000/api/users", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(user),
+    });
+
+    if (res.ok) {
+      fetchUsers(); // refresh list
+    } else {
+      console.error("Failed to add user");
+    }
+  };
+
   const startEdit = (user) => setEditing({ ...user });
   const saveEdit = async () => {
     const { _id, name, email, phoneNumber, age, fathersNumber } = editing;
@@ -84,8 +101,8 @@ export default function Dashboard() {
         <div className="header">
           <h3>Users</h3>
           <div style={{ display: "flex", gap: 8 }}>
+            <DownloadCSVButton users={users} />
             <button className="btn" onClick={logout}>Logout</button>
-            <button className="btn secondary" onClick={deleteSelected} disabled={selectedIds.length === 0}>Delete Selected</button>
           </div>
         </div>
 
@@ -109,11 +126,16 @@ export default function Dashboard() {
           limit={limit}
           setLimit={setLimit}
         />
-
-        <DownloadCSVButton users={users} />
+        <div style={{ display: 'flex', gap: '8px', marginTop: '16px' }}>
+            <button className="btn primary" onClick={() => setAdding(true)}>Add User</button>
+            <button className="btn secondary" onClick={deleteSelected} disabled={selectedIds.length === 0}>Delete Selected</button>
+        </div>
       </div>
 
       <EditUserModal editing={editing} setEditing={setEditing} saveEdit={saveEdit} />
+      
+      <AddUserModal open={adding} setOpen={setAdding} fetchUsers={fetchUsers} />
+
     </div>
   );
 }

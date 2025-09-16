@@ -4,6 +4,9 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import OAuthRedirect from './pages/OAuthRedirect';
 import Dashboard from './pages/Dashboard';
+import PublicRoute from '../routes/PublicRoute';
+
+
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem('token');
@@ -20,10 +23,11 @@ function App(){
     <BrowserRouter>
       <Routes>
         <Route path='/' element={<RootRedirect />} />
-        <Route path='/login' element={<LoginPage/>} />
-        <Route path='/register' element={<RegisterPage/>} />
-        <Route path='/oauth2redirect' element={<OAuthRedirect/>} />
+        <Route path='/login' element={<PublicRoute><LoginPage/></PublicRoute>} />
+        <Route path='/register' element={<PublicRoute><RegisterPage/></PublicRoute>} />
+        <Route path='/oauth2redirect' element={<PublicRoute><OAuthRedirect/></PublicRoute>} />
         <Route path='/dashboard' element={<ProtectedRoute><Dashboard/></ProtectedRoute>} />
+        <Route path="*" element={<RootRedirect />} /> 
       </Routes>
     </BrowserRouter>
   );

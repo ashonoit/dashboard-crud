@@ -13,15 +13,13 @@ export default function RegisterPage(){
     e.preventDefault();
     setErr('');
     if (!form.name || !form.email || !form.password) return setErr('Please fill required fields');
-    if (isNaN(form.phoneNumber)) {
-      return setErr('Enter a valid number');
-    }
 
     try {
       await api.post('/auth/register', form);
       alert('Registered successfully. Please login.');
       nav('/login');
     } catch (err) {
+      console.error(err);
       setErr(err.response?.data?.message || err.message || 'Server error');
     }
   };
