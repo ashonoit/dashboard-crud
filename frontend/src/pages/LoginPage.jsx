@@ -1,24 +1,34 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import api, { setAuthToken } from '../utils/api';
+// frontend/src/pages/LoginPage.jsx
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import api, { setAuthToken } from "../utils/api";
+import {
+  Container,
+  Paper,
+  Typography,
+  TextField,
+  Button,
+  Box,
+  Divider,
+} from "@mui/material";
 
-export default function LoginPage(){
+export default function LoginPage() {
   const nav = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [err, setErr] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [err, setErr] = useState("");
 
   const submit = async (e) => {
     e.preventDefault();
-    setErr('');
-    if (!email || !password) return setErr('Fill all fields');
+    setErr("");
+    if (!email || !password) return setErr("Fill all fields");
     try {
-      const res = await api.post('/auth/login', { email, password });
+      const res = await api.post("/auth/login", { email, password });
       setAuthToken(res.data.token);
-      localStorage.setItem('user', JSON.stringify(res.data.user));
-      nav('/dashboard');
+      localStorage.setItem("user", JSON.stringify(res.data.user));
+      nav("/dashboard");
     } catch (err) {
-      setErr(err.response?.data?.message || err.message || 'Server error');
+      setErr(err.response?.data?.message || err.message || "Server error");
     }
   };
 
@@ -27,31 +37,74 @@ export default function LoginPage(){
   };
 
   return (
-    <div className="container">
-      <div className="card" style={{maxWidth:520, margin:'40px auto'}}>
-        <div className="header">
-          <h2>Sign in</h2>
-        </div>
-        <form onSubmit={submit}>
-          <div style={{marginBottom:12}}>
-            <label className="small">Email</label>
-            <input className="input" type="email" value={email} onChange={e=>setEmail(e.target.value)} required />
-          </div>
-          <div style={{marginBottom:12}}>
-            <label className="small">Password</label>
-            <input className="input" type="password" value={password} onChange={e=>setPassword(e.target.value)} required minLength={6} />
-          </div>
-          {err && <div style={{color:'#ff6b6b', marginBottom:8}}>{err}</div>}
-          <div style={{display:'flex',gap:8}}>
-            <button className="btn" type="submit">Login</button>
-            <button type="button" className="btn secondary" onClick={()=>nav('/register')}>Register</button>
-          </div>
-        </form>
-        <hr style={{margin:'18px 0',borderColor:'rgba(255,255,255,0.03)'}}/>
-        <div style={{display:'flex',gap:8}}>
-          <button className="btn" onClick={handleGoogle}>Sign in with Google</button>
-        </div>
-      </div>
-    </div>
+    <Box
+      sx={{
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        bgcolor: "#000000ff",
+      }}
+    >
+      <Container maxWidth="sm">
+        <Paper elevation={5} sx={{ p: 4, borderRadius: 3 }}>
+          <Typography variant="h5" fontWeight="bold" gutterBottom align="center">
+            Sign In
+          </Typography>
+
+          <form onSubmit={submit}>
+            <TextField
+              label="Email"
+              type="email"
+              fullWidth
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              sx={{ mb: 2 }}
+              required
+            />
+            <TextField
+              label="Password"
+              type="password"
+              fullWidth
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              sx={{ mb: 2 }}
+              required
+              inputProps={{ minLength: 6 }}
+            />
+
+            {err && (
+              <Typography color="error" variant="body2" sx={{ mb: 2 }}>
+                {err}
+              </Typography>
+            )}
+
+            <Box display="flex" gap={2} mb={2}>
+              <Button type="submit" variant="contained" fullWidth>
+                Login
+              </Button>
+              <Button
+                variant="outlined"
+                fullWidth
+                onClick={() => nav("/register")}
+              >
+                Register
+              </Button>
+            </Box>
+          </form>
+
+          <Divider sx={{ my: 2 }} />
+
+          <Button
+            fullWidth
+            variant="contained"
+            color="secondary"
+            onClick={handleGoogle}
+          >
+            Sign in with Google
+          </Button>
+        </Paper>
+      </Container>
+    </Box>
   );
 }
