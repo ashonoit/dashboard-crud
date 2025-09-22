@@ -6,6 +6,9 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const User = require('../models/User');
 const {register, login} = require('../controllers/auth.controller');
 const router = express.Router();
+const dotenv = require('dotenv');
+dotenv.config();
+
 
 // Register (local)
 router.post('/register', register);

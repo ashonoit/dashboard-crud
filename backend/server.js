@@ -2,8 +2,8 @@
  * backend/server.js
  * Updated to support payment webhooks by preserving raw body for verification.
  */
-
-require('dotenv').config();
+const dotenv = require('dotenv');
+dotenv.config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const passport = require('passport');
@@ -15,6 +15,7 @@ const usersRoutes = require('./routes/users');
 const paymentsRoutes = require('./routes/payments');
 
 const app = express();
+
 
 // Capture raw body for webhook verification
 app.use(bodyParser.json({
@@ -34,5 +35,4 @@ app.use('/api/users', usersRoutes);
 app.use('/api/payments', paymentsRoutes);
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log('Server running on port', PORT));
-
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

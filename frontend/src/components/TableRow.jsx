@@ -18,7 +18,7 @@ export default function TableRow({ user, selected, toggleSelect, onEdit, onDelet
       <td>{user.age || "-"}</td>
       <td>{user.fathersNumber || "-"}</td>
       <td>
-        <button className="btn secondary" onClick={() => onEdit(user)}>Edit</button>
+        <button className="btn" onClick={() => onEdit(user)}>Edit</button>
         <button className="btn" style={{ marginLeft: 8 }} onClick={() => onDelete(user._id)}>Delete</button>
       </td>
     </tr>

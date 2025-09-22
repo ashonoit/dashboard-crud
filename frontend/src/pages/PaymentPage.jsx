@@ -62,9 +62,9 @@ export default function PaymentPage() {
             if (verifyResp.data && verifyResp.data.ok) {
               toast.success("Payment successful");
               window.location.href =
-                "/payments/status?status=success&orderId=" + order.id;
+                "/payments/status?status=success&orderId=" + verifyResp.data.orderId;
             } else {
-              toast.error("Payment verification failed");
+              toast.error(verifyResp.data.error || "Payment verification failed");
               window.location.href =
                 "/payments/status?status=failed&orderId=" + order.id;
             }
@@ -79,16 +79,20 @@ export default function PaymentPage() {
         theme: { color: "#2563eb" },
       };
 
-      const rzp = new window.Razorpay(options);
-      rzp.on("payment.failed", function (resp) {
-        console.error("Payment failed", resp);
-        toast.error(
-          "Payment failed: " + (resp.error && resp.error.description)
-        );
-        window.location.href =
-          "/payments/status?status=failed&orderId=" + order.id;
-      });
-      rzp.open();
+      if (window.Razorpay) {
+        const rzp = new window.Razorpay(options);
+        rzp.on("payment.failed", function (resp) {
+          console.error("Payment failed", resp);
+          toast.error(
+            "Payment failed: " + (resp.error && resp.error.description)
+          );
+          window.location.href =
+            "/payments/status?status=failed&orderId=" + order.id;
+        });
+        rzp.open();
+      } else {
+        toast.error("Razorpay SDK failed to load");
+      }
     } catch (err) {
       console.error("create-order error", err.response ? err.response.data : err);
       toast.error("Server error creating order");

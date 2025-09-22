@@ -1,0 +1,6 @@
+- [x] Fix createOrder: multiply amount by 100 for Razorpay and save in paise
+- [x] Fix refundPayment: use payment.amount directly (already in paise)
+- [x] Fix email in verifyPayment: use payment.amount / 100 for display
+- [x] Fix signature verification order in verifyPayment
+- [x] Fix amount display in PaymentHistory (remove extra /100)
+- [x] Test payment creation and verify no 500 error
